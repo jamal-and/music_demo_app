@@ -41,6 +41,7 @@ dependencies:
   pinput: ^5.0.1
   flutter_screenutil: ^5.9.3
   flutter_staggered_animations: ^1.1.1
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,10 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:music_app/core/controller/user_controller.dart';
 import 'package:music_app/general_export.dart';
 import 'package:music_app/routes.dart';
@@ -9,6 +13,7 @@ import 'package:music_app/ui/widgets/app_bar.dart';
 import 'package:music_app/ui/widgets/big_category_item.dart';
 import 'package:music_app/ui/widgets/buttons.dart';
 import 'package:music_app/ui/widgets/csvg.dart';
+import 'package:music_app/ui/widgets/dialogs.dart';
 import 'package:music_app/ui/widgets/list_item_widget.dart';
 import 'package:music_app/ui/widgets/list_item_with_image.dart';
 
@@ -48,14 +53,19 @@ class ProfielScreen extends StatelessWidget {
                   generalBox,
                   Column(
                     children: [
-                      Container(
-                        decoration: circleDecoration(),
-                        clipBehavior: Clip.hardEdge,
-                        width: 0.2.sw,
-                        height: 0.2.sw,
-                        child: Image.asset(
-                          Assets.assetsImagesLoginBg,
-                          fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          viewmodel.pickImages();
+                        },
+                        child: Container(
+                          decoration: circleDecoration(),
+                          clipBehavior: Clip.hardEdge,
+                          width: 0.2.sw,
+                          height: 0.2.sw,
+                          child: Image.asset(
+                            Assets.assetsImagesLoginBg,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       Text(
@@ -119,23 +129,28 @@ class ProfielScreen extends StatelessWidget {
                           ],
                         ),
                         generalBox,
-                        Container(
-                          decoration: cardDecoration(color: AppColors.white),
-                          padding: generalSmallPadding,
-                          width: 1.sw,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              MySvg(
-                                Assets.assetsSvgsUserPlusPerson,
-                                width: 0.05.sw,
-                              ),
-                              generalSmallBox,
-                              Text(
-                                'Follow',
-                                style: tStyles['black14semi'],
-                              )
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            viewmodel.pickImages();
+                          },
+                          child: Container(
+                            decoration: cardDecoration(color: AppColors.white),
+                            padding: generalSmallPadding,
+                            width: 1.sw,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                MySvg(
+                                  Assets.assetsSvgsUserPlusPerson,
+                                  width: 0.05.sw,
+                                ),
+                                generalSmallBox,
+                                Text(
+                                  'Uplaod Photos',
+                                  style: tStyles['black14semi'],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -207,32 +222,105 @@ class ProfielScreen extends StatelessWidget {
                               padding: EdgeInsets.symmetric(
                                   vertical: verticalSpacing / 2),
                             )
-                          : GridView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 9,
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                childAspectRatio: 0.76,
-                                mainAxisSpacing: verticalSpacing,
-                                crossAxisSpacing: horizontalSpacing,
-                              ),
-                              itemBuilder: (context, index) {
-                                return AnimationConfiguration.staggeredList(
-                                  position: index,
-                                  child: const SlideAnimation(
-                                    horizontalOffset: 50,
-                                    child: FadeInAnimation(
-                                      child: ListItemWidget(
-                                        title: 'Title',
-                                        subtitle: 'sss',
+                          : GetBuilder(builder: (ProfileViewmodel viewmodel) {
+                              return GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: viewmodel.imagesFiles.isEmpty
+                                    ? 8
+                                    : viewmodel.imagesFiles.length,
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 0.76,
+                                  mainAxisSpacing: verticalSpacing,
+                                  crossAxisSpacing: horizontalSpacing,
+                                ),
+                                itemBuilder: (context, index) {
+                                  XFile? image =
+                                      viewmodel.imagesFiles.isNotEmpty
+                                          ? viewmodel.imagesFiles[index]
+                                          : null;
+                                  return AnimationConfiguration.staggeredList(
+                                    position: index,
+                                    child: SlideAnimation(
+                                      horizontalOffset: 50,
+                                      child: FadeInAnimation(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            if (image != null) {
+                                              Get.dialog(
+                                                Dialog(
+                                                  clipBehavior: Clip.hardEdge,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      horizontalSpacing / 2,
+                                                    ),
+                                                  ),
+                                                  child: Container(
+                                                    decoration:
+                                                        cardDecoration(),
+                                                    child: Stack(
+                                                      children: [
+                                                        Image.file(
+                                                          File(image.path),
+                                                        ),
+                                                        Positioned(
+                                                          right:
+                                                              horizontalSpacing /
+                                                                  2,
+                                                          top: verticalSpacing /
+                                                              2,
+                                                          child: CIconButton(
+                                                            icon: CupertinoIcons
+                                                                .xmark,
+                                                            iconColor:
+                                                                AppColors.black,
+                                                            backgroundColor:
+                                                                AppColors.white
+                                                                    .withOpacity(
+                                                              0.7,
+                                                            ),
+                                                            onPress: () {
+                                                              Get.back();
+                                                            },
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          onLongPress: () {
+                                            if (image != null) {
+                                              Get.dialog(
+                                                YesNoDialog(
+                                                  icon:
+                                                      Assets.assetsSvgsWarning,
+                                                  title:
+                                                      'Are you sure want to delete this photo',
+                                                  onYes: () {
+                                                    viewmodel.onDeletes(image);
+                                                  },
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: ListItemWidget(
+                                            title: 'Title',
+                                            subtitle: 'sss',
+                                            imageUrl: (image?.path),
+                                          ),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            )
+                                  );
+                                },
+                              );
+                            })
                     ],
                   ),
                 );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:music_app/general_export.dart';
 
@@ -24,12 +26,21 @@ class ListItemWidget extends StatelessWidget {
             child: Container(
               decoration: cardDecoration(),
               clipBehavior: Clip.hardEdge,
-              child: Image.asset(
-                Assets.assetsImagesLoginBg,
-                width: 1.sw,
-                height: 1.sw,
-                fit: BoxFit.cover,
-              ),
+              child: imageUrl != null
+                  ? Image.file(
+                      File(
+                        imageUrl!,
+                      ),
+                      width: 1.sw,
+                      height: 1.sw,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      Assets.assetsImagesLoginBg,
+                      width: 1.sw,
+                      height: 1.sw,
+                      fit: BoxFit.cover,
+                    ),
             ),
           ),
           Padding(
