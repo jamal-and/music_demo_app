@@ -55,7 +55,7 @@ class ProfielScreen extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          viewmodel.pickImages();
+                          //  viewmodel.pickImages();
                         },
                         child: Container(
                           decoration: circleDecoration(),
@@ -131,7 +131,44 @@ class ProfielScreen extends StatelessWidget {
                         generalBox,
                         GestureDetector(
                           onTap: () {
-                            viewmodel.pickImages();
+                            showCupertinoModalPopup(
+                              context: context,
+                              builder: (context) {
+                                return CupertinoActionSheet(
+                                  cancelButton: CupertinoActionSheetAction(
+                                    isDefaultAction: true,
+                                    onPressed: () {
+                                      Get.back();
+                                    },
+                                    child: const Text('Cancel'),
+                                  ),
+                                  actions: [
+                                    CupertinoActionSheetAction(
+                                      onPressed: viewmodel.pickImages,
+                                      child: Text(
+                                        'From Gallery',
+                                        style: tStyles['black16semi'],
+                                      ),
+                                    ),
+                                    CupertinoActionSheetAction(
+                                      onPressed: viewmodel.pickImageFromCamer,
+                                      child: Text(
+                                        'From Camera',
+                                        style: tStyles['black16semi'],
+                                      ),
+                                    )
+                                  ],
+                                );
+                                return const Text('data');
+                              },
+                            );
+                            // showModalBottomSheet(
+                            //   context: context,
+                            //   builder: (context) {
+                            //     return const Text('data');
+                            //   },
+                            // );
+                            //  viewmodel.pickImages();
                           },
                           child: Container(
                             decoration: cardDecoration(color: AppColors.white),

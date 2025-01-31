@@ -10,7 +10,7 @@ void showLoadingOverlay() {
   }
   isLoading = true;
   Get.dialog(
-    const CircularProgressIndicator.adaptive(),
+    const Center(child: CircularProgressIndicator.adaptive()),
     barrierDismissible: false,
   );
 }

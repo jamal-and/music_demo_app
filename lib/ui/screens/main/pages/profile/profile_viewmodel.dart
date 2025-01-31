@@ -14,13 +14,34 @@ class ProfileViewmodel extends GetxController {
 
   pickImages() async {
     showLoadingOverlay();
-    final newImages = await pickMultipleImagesFromGallery();
-
-    if (newImages != null) {
-      imagesFiles.addAll(newImages);
-      update();
+    try {
+      final newImages = await pickMultipleImagesFromGallery();
+      if (newImages != null) {
+        imagesFiles.addAll(newImages);
+        update();
+      }
+    } catch (e) {
+      print(e);
     }
+
     hideLoadingOverlay();
+    Get.back();
+  }
+
+  pickImageFromCamer() async {
+    showLoadingOverlay();
+    try {
+      final newImage = await pickImageFromCamera();
+      if (newImage != null) {
+        imagesFiles.add(newImage);
+        update();
+      }
+    } catch (e) {
+      print(e);
+    }
+
+    hideLoadingOverlay();
+    Get.back();
   }
 
   onDeletes(XFile image) {

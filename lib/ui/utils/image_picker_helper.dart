@@ -14,17 +14,16 @@ Future<List<XFile>?> pickMultipleImagesFromGallery() async {
   }
 }
 
-// Example usage:
+Future<XFile?> pickImageFromCamera() async {
+  final ImagePicker picker = ImagePicker();
 
-void _pickImages() async {
-  final List<XFile>? pickedImages = await pickMultipleImagesFromGallery();
+  try {
+    final XFile? images = await picker.pickImage(source: ImageSource.camera);
 
-  if (pickedImages != null) {
-    // Do something with the picked images
-    for (var image in pickedImages) {
-      print('Image path: ${image.path}');
-      // You can display the image using Image.file:
-      // Image.file(File(image.path))
-    }
+    return images; // Return the list of picked images
+  } catch (e) {
+    // Handle any errors during image picking
+    print('Error picking images: $e');
+    return null;
   }
 }
